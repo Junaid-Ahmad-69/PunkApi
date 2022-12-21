@@ -1,16 +1,16 @@
 .button-control {
-  margin: 20px 0;
+  margin: 1rem 0;
 }
 .button-control button {
   outline: 0;
   border: 0;
   color: white;
-  background-color: #690fad;
+  background-color: #7dc2af;
   transition: all 0.3s linear;
-  font-size: 16px;
+  font-size: 1.2rem;
   cursor: pointer;
-  padding: 10px;
-  border: 1px solid #690fad;
+  padding: 0.3rem 1rem;
+  border: 1px solid #7dc2af;
   border-radius: 3px;
 }
 .button-control button:hover {
@@ -18,6 +18,5 @@
   border: 0;
   background-color: transparent;
   color: black;
-  border: 1px solid #690fad;
-  padding: 10px;
+  border: 1px solid #fcde4b;
 }

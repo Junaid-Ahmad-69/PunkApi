@@ -1,0 +1,10 @@
+footer {
+  background-color: #7dc2af;
+  color: whitesmoke;
+  width: 100%;
+  text-align: center;
+  padding: 1rem;
+}
+small {
+  font-size: 1.4rem;
+}
