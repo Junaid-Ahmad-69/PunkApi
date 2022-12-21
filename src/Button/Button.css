@@ -1,0 +1,23 @@
+.button-control {
+  margin: 20px 0;
+}
+.button-control button {
+  outline: 0;
+  border: 0;
+  color: white;
+  background-color: #690fad;
+  transition: all 0.3s linear;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid #690fad;
+  border-radius: 3px;
+}
+.button-control button:hover {
+  outline: 0;
+  border: 0;
+  background-color: transparent;
+  color: black;
+  border: 1px solid #690fad;
+  padding: 10px;
+}
