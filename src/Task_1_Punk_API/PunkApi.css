@@ -1,5 +1,6 @@
 main {
   padding: 0 5rem;
+  width: 100%;
 }
 h1 {
   font-size: 3rem;
@@ -11,6 +12,7 @@ form {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 .form-control {
   display: flex;
@@ -45,6 +47,9 @@ form {
 }
 .punk-table tr td {
   font-size: 1.2rem;
-  padding: 0 1.6rem;
+  padding: 0.5rem 1.6rem;
   text-align: center;
+}
+.brewed-image {
+  width: 3rem;
 }

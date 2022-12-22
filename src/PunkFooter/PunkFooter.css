@@ -4,6 +4,10 @@ footer {
   width: 100%;
   text-align: center;
   padding: 1rem;
+  display: flex;
+  align-self: flex-end;
+  justify-content: center;
+  margin-top: auto;
 }
 small {
   font-size: 1.4rem;
