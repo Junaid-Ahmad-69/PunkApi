@@ -2,7 +2,7 @@ import "../PunkFooter/PunkFooter.css";
 const PunkFooter = () => {
   return (
     <footer>
-      <small>Copywrite © Sandhu 2022</small>
+      <small>Copywrite © 2022</small>
     </footer>
   );
 };

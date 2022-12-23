@@ -1,165 +1,145 @@
 import React, { useState, useEffect } from "react";
-import Button from "../Button/Button";
+import PunkForm from "../PunkForm/PunkForm";
 import "../Task_1_Punk_API/PunkApi.css";
+import PunkTable from "../PunkTable/PunkTable";
 
 const PunkApi = () => {
   const [response, setResponse] = useState([]);
-  const [name, setName] = useState("");
-  const [punks, setPunks] = useState({
-    data: "",
-    punks: [],
-  });
+  const [nameBeer, setNameBeer] = useState("arcade");
+  const [nameId, setNameId] = useState("");
+  const [searchapi, setSearchApi] = useState([]);
+  const [nameTagline, setNameSearch] = useState("");
+  const [nameBrewed, setNameBrewed] = useState("");
+  const [nameAbv, setNameAbv] = useState("");
 
   useEffect(() => {
     const dataFetch = async () => {
       const result = await fetch(
-        "https://api.punkapi.com/v2/beers?page=1&per_page=80"
+        `https://api.punkapi.com/v2/beers?beer_name=${nameBeer}`
       ).then((result) => result.json());
+
       setResponse(result);
+      setSearchApi(result);
     };
     dataFetch();
-    return () => {
-      // clean not working
-    };
-  }, []);
+  }, [nameBeer]);
 
   const submitHandler = (event) => {
     event.preventDefault();
   };
 
   const changeHandler = (e) => {
-    const results = response.filter((res) => {
-      if (e.target.value === " ") return response;
-      return res.name.toLowerCase().includes(e.target.value.toLowerCase());
-    });
-    setName(e.target.value);
-    setPunks({
-      data: e.target.value,
-      punks: results,
-    });
+    if (e.target.value === " ") {
+      setResponse(searchapi);
+    } else {
+      const result = searchapi.filter((item) =>
+        item.name.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      setResponse(result);
+    }
+    setNameBeer(e.target.value);
   };
 
-  // const IdHandler = (e) => {
-  //   const results = response.filter((res) => {
-  //     if (res.id === e.target.value) return results;
-  //   });
-  //   setName(e.target.value);
-  //   setPunks({
-  //     data: e.target.value,
-  //     punks: results,
-  //   });
-  // };
+  const idHandler = (e) => {
+    if (e.target.value === " ") {
+      setResponse(searchapi);
+    } else {
+      const results = searchapi.filter((item) =>
+        item.id.toString().includes(e.target.value.toString())
+      );
+      setResponse(results);
+    }
+    setNameId(e.target.value);
+  };
+
+  const tagHandler = (e) => {
+    if (e.target.value === " ") {
+      setResponse(searchapi);
+    } else {
+      const tag = searchapi.filter((item) =>
+        item.tagline.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+      setResponse(tag);
+    }
+    setNameSearch(e.target.value);
+  };
+
+  const brewedHandler = (e) => {
+    if (e.target.value === " ") {
+      setResponse(searchapi);
+    } else {
+      const tag = searchapi.filter((item) =>
+        item.first_brewed
+          .toString()
+          .slice(0, 2)
+          .includes(e.target.value.toString())
+      );
+      setResponse(tag);
+    }
+    setNameBrewed(e.target.value);
+  };
+
+  const abvHandler = (e) => {
+    if (e.target.value === " ") {
+      setResponse(searchapi);
+    } else {
+      const tag = searchapi.filter((item) =>
+        item.abv.toString().slice(0, 2).includes(e.target.value.toString())
+      );
+      setResponse(tag);
+    }
+    setNameAbv(e.target.value);
+  };
+
+  const column = {
+    name: "Name",
+    id: "Id",
+    tagline: "Tagline",
+    firstBrewed: "First Brewed",
+    description: "Description",
+    abv: "Abv",
+    yeast: "Yeast",
+    image: "image",
+  };
 
   return (
     <>
       <main>
         <h1>Punk Brewed</h1>
-        <form action="#" onSubmit={submitHandler}>
-          <div className="form-control">
-            <label htmlFor="punk-name">Search By Name</label>
-            <input type="text" value={name} onChange={changeHandler} />
-          </div>
+        <div className="search-controler" onSubmit={submitHandler}>
+          <PunkForm
+            name="Search By Name"
+            value={nameBeer}
+            type="text"
+            handler={changeHandler}
+          />
+          <PunkForm
+            name="Search By Id"
+            value={nameId}
+            type="number"
+            handler={idHandler}
+          />
+          <PunkForm
+            name="Search By Tagline"
+            value={nameTagline}
+            type="text"
+            handler={tagHandler}
+          />
+          <PunkForm
+            name="Search By First Brewed"
+            value={nameBrewed}
+            type="number"
+            handler={brewedHandler}
+          />
+          <PunkForm
+            name="Search By Abv"
+            value={nameAbv}
+            type="number"
+            handler={abvHandler}
+          />
+        </div>
 
-          <div className="form-control">
-            <label htmlFor="punk-name">Search By Id</label>
-            <input type="number" value={name} />
-          </div>
-
-          <div className="form-control">
-            <label htmlFor="punk-name">Search By Tagline</label>
-            <input type="text" id="punk-name" name="punk-name" />
-          </div>
-
-          <div className="form-control">
-            <label htmlFor="punk-name">Search By First Brewed</label>
-            <input type="text" id="punk-name" name="punk-name" />
-          </div>
-
-          <div className="form-control">
-            <label htmlFor="punk-name">Search By Abv</label>
-            <input type="text" id="punk-name" name="punk-name" />
-          </div>
-        </form>
-
-        <table className="punk-table">
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>Name</th>
-              <th>Tagline</th>
-              <th>First Brewed</th>
-              <th>Description</th>
-              <th>Abv</th>
-              <th>Yeast</th>
-              <th>Image</th>
-            </tr>
-          </thead>
-          <tbody>
-            {punks.data == ""
-              ? response?.map(
-                  ({
-                    id,
-                    name,
-                    tagline,
-                    first_brewed,
-                    description,
-                    abv,
-                    yeast,
-                    image_url,
-                  }) => {
-                    return (
-                      <tr key={id}>
-                        <td>{id}</td>
-                        <td>{name}</td>
-                        <td>{tagline}</td>
-                        <td>{first_brewed}</td>
-                        <td>{description}</td>
-                        <td>{abv}</td>
-                        <td>{yeast}</td>
-                        <td>
-                          <img
-                            src={image_url}
-                            alt="brewed_images"
-                            className="brewed-image"
-                          />
-                        </td>
-                      </tr>
-                    );
-                  }
-                )
-              : punks.punks.map(
-                  ({
-                    id,
-                    name,
-                    tagline,
-                    first_brewed,
-                    description,
-                    abv,
-                    yeast,
-                    image_url,
-                  }) => {
-                    return (
-                      <tr key={id}>
-                        <td>{id}</td>
-                        <td>{name}</td>
-                        <td>{tagline}</td>
-                        <td>{first_brewed}</td>
-                        <td>{description}</td>
-                        <td>{abv}</td>
-                        <td>{yeast}</td>
-                        <td>
-                          <img
-                            src={image_url}
-                            alt="brewed_images"
-                            className="brewed-image"
-                          />
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
-          </tbody>
-        </table>
+        <PunkTable response={response} column={column} />
       </main>
     </>
   );
