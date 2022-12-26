@@ -1,5 +1,5 @@
 import "./PunkTable.css";
-const PunkTable = ({ response, column }) => {
+const PunkTable = ({response, column}) => {
   return (
     <>
       <table className="punk-table">

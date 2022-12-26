@@ -5,91 +5,91 @@ import PunkTable from "../PunkTable/PunkTable";
 
 const PunkApi = () => {
   const [response, setResponse] = useState([]);
-  const [nameBeer, setNameBeer] = useState("arcade");
-  const [nameId, setNameId] = useState("");
-  const [searchapi, setSearchApi] = useState([]);
-  const [nameTagline, setNameSearch] = useState("");
-  const [nameBrewed, setNameBrewed] = useState("");
-  const [nameAbv, setNameAbv] = useState("");
+  const [punks, setPunks] = useState([]);
+  const [state, setState] = useState({
+    query: "",
+    list: [],
+  });
 
   useEffect(() => {
     const dataFetch = async () => {
       const result = await fetch(
-        `https://api.punkapi.com/v2/beers?beer_name=${nameBeer}`
-      ).then((result) => result.json());
-
+        `https://api.punkapi.com/v2/beers?page=1&per_page=80`
+      ).then((res) => res.json());
       setResponse(result);
-      setSearchApi(result);
+      setPunks(result);
     };
     dataFetch();
-  }, [nameBeer]);
+  }, []);
 
   const submitHandler = (event) => {
     event.preventDefault();
   };
 
   const changeHandler = (e) => {
-    if (e.target.value === " ") {
-      setResponse(searchapi);
+    if (e.target.name === "") {
+      return setResponse(punks);
     } else {
-      const result = searchapi.filter((item) =>
-        item.name.toLowerCase().includes(e.target.value.toLowerCase())
-      );
-      setResponse(result);
+      const name = punks.filter((item) => {
+         item.name.toLowerCase().includes(e.target.value.toLowerCase());
+      });
+      setState({
+        query: e.target.value,
+        list: name,
+      });
     }
-    setNameBeer(e.target.value);
   };
 
-  const idHandler = (e) => {
-    if (e.target.value === " ") {
-      setResponse(searchapi);
-    } else {
-      const results = searchapi.filter((item) =>
-        item.id.toString().includes(e.target.value.toString())
-      );
-      setResponse(results);
-    }
-    setNameId(e.target.value);
-  };
+  // const idHandler = (e) => {
+  //   if (e.target.value === " ") {
+  //     setResponse(searchapi);
+  //   } else {
+  //     const id = searchapi.filter((item) =>
+  //       item.id.toString().includes(e.target.value.toString())
+  //     );
+  //     setResponse(id);
+  //   }
+  //   setNameId(e.target.value);
+  // };
 
-  const tagHandler = (e) => {
-    if (e.target.value === " ") {
-      setResponse(searchapi);
-    } else {
-      const tag = searchapi.filter((item) =>
-        item.tagline.toLowerCase().includes(e.target.value.toLowerCase())
-      );
-      setResponse(tag);
-    }
-    setNameSearch(e.target.value);
-  };
+  // const tagHandler = (e) => {
+  //   if (e.target.value === " ") {
+  //     setResponse(searchapi);
+  //   } else {
+  //     const tag = searchapi.filter((item) =>
+  //       item.tagline.toLowerCase().includes(e.target.value.toLowerCase())
+  //     );
+  //     setResponse(tag);
+  //   }
+  //   setNameSearch(e.target.value);
+  // };
 
-  const brewedHandler = (e) => {
-    if (e.target.value === " ") {
-      setResponse(searchapi);
-    } else {
-      const tag = searchapi.filter((item) =>
-        item.first_brewed
-          .toString()
-          .slice(0, 2)
-          .includes(e.target.value.toString())
-      );
-      setResponse(tag);
-    }
-    setNameBrewed(e.target.value);
-  };
+  // const brewedHandler = (e) => {
+  //   if (e.target.value === " ") {
+  //     setResponse(searchapi);
+  //   } else {
+  //     const brewed = searchapi.filter((item) =>
+  //       item.first_brewed
+  //         .toString()
+  //         .slice(0, 2)
+  //         .includes(e.target.value.toString())
+  //     );
+  //     setResponse(brewed);
+  //   }
+  //   setNameBrewed(e.target.value);
+  // };
 
-  const abvHandler = (e) => {
-    if (e.target.value === " ") {
-      setResponse(searchapi);
-    } else {
-      const tag = searchapi.filter((item) =>
-        item.abv.toString().slice(0, 2).includes(e.target.value.toString())
-      );
-      setResponse(tag);
-    }
-    setNameAbv(e.target.value);
-  };
+  // const abvHandler = (e) => {
+  //   if (e.target.value === " ") {
+  //     setResponse(searchapi);
+  //   } else {
+  //     const avg = searchapi.filter((item) =>
+  //       item.abv.toString().slice(0, 2).includes(e.target.value.toString())
+  //     );
+  //     setResponse(avg);
+  //   }
+  //   setNameAbv(e.target.value);
+  // };
 
   const column = {
     name: "Name",
@@ -109,11 +109,11 @@ const PunkApi = () => {
         <div className="search-controler" onSubmit={submitHandler}>
           <PunkForm
             name="Search By Name"
-            value={nameBeer}
+            value={state.query}
             type="text"
             handler={changeHandler}
           />
-          <PunkForm
+          {/* <PunkForm
             name="Search By Id"
             value={nameId}
             type="number"
@@ -136,7 +136,7 @@ const PunkApi = () => {
             value={nameAbv}
             type="number"
             handler={abvHandler}
-          />
+          /> */}
         </div>
 
         <PunkTable response={response} column={column} />
