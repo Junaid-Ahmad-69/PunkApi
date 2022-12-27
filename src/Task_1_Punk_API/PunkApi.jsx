@@ -6,90 +6,59 @@ import PunkTable from "../PunkTable/PunkTable";
 const PunkApi = () => {
   const [response, setResponse] = useState([]);
   const [punks, setPunks] = useState([]);
-  const [state, setState] = useState({
-    query: "",
-    list: [],
+  const [search, setSearch] = useState({
+    id: "",
+    name: "",
+    yeast: "",
+    abv_gt: "",
+    first_brewed: "",
   });
 
   useEffect(() => {
     const dataFetch = async () => {
       const result = await fetch(
-        `https://api.punkapi.com/v2/beers?page=1&per_page=80`
+        `https://api.punkapi.com/v2/beers?beer_name=${search.name}`
       ).then((res) => res.json());
       setResponse(result);
       setPunks(result);
     };
     dataFetch();
-  }, []);
+  }, [search]);
 
-  const submitHandler = (event) => {
-    event.preventDefault();
+  const inputEvent = (event) => {
+    const { value, name } = event.target;
+    setSearch({ ...search, [name]: value });
   };
 
-  const changeHandler = (e) => {
-    if (e.target.name === "") {
-      return setResponse(punks);
-    } else {
-      const name = punks.filter((item) => {
-         item.name.toLowerCase().includes(e.target.value.toLowerCase());
-      });
-      setState({
-        query: e.target.value,
-        list: name,
-      });
+  const setData = () => {
+    let beer = punks;
+    if (!search.name) {
+      const filterResult = beer.filter(({ name }) =>
+        name.toLowerCase().includes(search.name.toLowerCase())
+      );
+      beer = filterResult;
+      setPunks(beer);
+    }
+    if (!search.id) {
+      const filterResult = beer.filter(({ id }) => id == search.id);
+      beer = filterResult;
+      setPunks(beer);
+    }
+    if (!search.abv_gt) {
+      const filterResult = beer.filter(({ abv_gt }) =>
+        abv_gt.toLowerCase().includes(search.abv_gt.toLowerCase())
+      );
+      beer = filterResult;
+      setPunks(beer);
     }
   };
 
-  // const idHandler = (e) => {
-  //   if (e.target.value === " ") {
-  //     setResponse(searchapi);
-  //   } else {
-  //     const id = searchapi.filter((item) =>
-  //       item.id.toString().includes(e.target.value.toString())
-  //     );
-  //     setResponse(id);
-  //   }
-  //   setNameId(e.target.value);
-  // };
-
-  // const tagHandler = (e) => {
-  //   if (e.target.value === " ") {
-  //     setResponse(searchapi);
-  //   } else {
-  //     const tag = searchapi.filter((item) =>
-  //       item.tagline.toLowerCase().includes(e.target.value.toLowerCase())
-  //     );
-  //     setResponse(tag);
-  //   }
-  //   setNameSearch(e.target.value);
-  // };
-
-  // const brewedHandler = (e) => {
-  //   if (e.target.value === " ") {
-  //     setResponse(searchapi);
-  //   } else {
-  //     const brewed = searchapi.filter((item) =>
-  //       item.first_brewed
-  //         .toString()
-  //         .slice(0, 2)
-  //         .includes(e.target.value.toString())
-  //     );
-  //     setResponse(brewed);
-  //   }
-  //   setNameBrewed(e.target.value);
-  // };
-
-  // const abvHandler = (e) => {
-  //   if (e.target.value === " ") {
-  //     setResponse(searchapi);
-  //   } else {
-  //     const avg = searchapi.filter((item) =>
-  //       item.abv.toString().slice(0, 2).includes(e.target.value.toString())
-  //     );
-  //     setResponse(avg);
-  //   }
-  //   setNameAbv(e.target.value);
-  // };
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setData();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   const column = {
     name: "Name",
@@ -106,39 +75,36 @@ const PunkApi = () => {
     <>
       <main>
         <h1>Punk Brewed</h1>
-        <div className="search-controler" onSubmit={submitHandler}>
+        <div className="search-controler">
           <PunkForm
-            name="Search By Name"
-            value={state.query}
-            type="text"
-            handler={changeHandler}
-          />
-          {/* <PunkForm
-            name="Search By Id"
-            value={nameId}
-            type="number"
-            handler={idHandler}
+            search={search.id}
+            type={"number"}
+            name={"id"}
+            inputEvent={inputEvent}
+            label={"Search By Id"}
           />
           <PunkForm
-            name="Search By Tagline"
-            value={nameTagline}
-            type="text"
-            handler={tagHandler}
+            search={search.name}
+            type={"text"}
+            name={"name"}
+            inputEvent={inputEvent}
+            label={"Search By Name"}
           />
           <PunkForm
-            name="Search By First Brewed"
-            value={nameBrewed}
-            type="number"
-            handler={brewedHandler}
+            search={search.first_brewed}
+            type={"text"}
+            name={"first_brewed"}
+            inputEvent={inputEvent}
+            label={"Search By First Brewed"}
           />
           <PunkForm
-            name="Search By Abv"
-            value={nameAbv}
-            type="number"
-            handler={abvHandler}
-          /> */}
+            search={search.abv}
+            type={"text"}
+            name={"abv"}
+            inputEvent={inputEvent}
+            label={"Search By Above Average"}
+          />
         </div>
-
         <PunkTable response={response} column={column} />
       </main>
     </>
