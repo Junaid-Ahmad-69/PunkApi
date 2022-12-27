@@ -9,7 +9,6 @@ const PunkApi = () => {
   const [search, setSearch] = useState({
     id: "",
     name: "",
-    yeast: "",
     abv_gt: "",
     first_brewed: "",
   });
@@ -17,7 +16,7 @@ const PunkApi = () => {
   useEffect(() => {
     const dataFetch = async () => {
       const result = await fetch(
-        `https://api.punkapi.com/v2/beers?beer_name=${search.name}`
+        `https://api.punkapi.com/v2/beers?ids=${search.id}`
       ).then((res) => res.json());
       setResponse(result);
       setPunks(result);
@@ -32,24 +31,35 @@ const PunkApi = () => {
 
   const setData = () => {
     let beer = punks;
-    if (!search.name) {
-      const filterResult = beer.filter(({ name }) =>
-        name.toLowerCase().includes(search.name.toLowerCase())
-      );
-      beer = filterResult;
-      setPunks(beer);
-    }
-    if (!search.id) {
-      const filterResult = beer.filter(({ id }) => id == search.id);
-      beer = filterResult;
-      setPunks(beer);
-    }
-    if (!search.abv_gt) {
-      const filterResult = beer.filter(({ abv_gt }) =>
-        abv_gt.toLowerCase().includes(search.abv_gt.toLowerCase())
-      );
-      beer = filterResult;
-      setPunks(beer);
+    if (!search.name || !search.id || !search.abv_gt || !search.first_brewed) {
+      if (!search.name) {
+        const filterResult = beer.filter(({ name }) =>
+          name.toLowerCase().includes(search.name.toLowerCase())
+        );
+        beer = filterResult;
+        setPunks(beer);
+      }
+      if (!search.id) {
+        const filterResult = beer.filter(({ id }) => id == search.id);
+        beer = filterResult;
+        setPunks(beer);
+      }
+      if (!search.first_brewed) {
+        const filterResult = beer.filter(({ first_brewed }) =>
+          first_brewed.toLowerCase().includes(search.first_brewed.toLowerCase())
+        );
+        beer = filterResult;
+        setPunks(beer);
+      }
+      if (!search.abv_gt) {
+        const filterResult = beer.filter(
+          ({ abv_gt }) => abv_gt == search.abv_gt
+        );
+        beer = filterResult;
+        setPunks(beer);
+      }
+    } else {
+      console.log("ddd");
     }
   };
 
@@ -99,8 +109,8 @@ const PunkApi = () => {
           />
           <PunkForm
             search={search.abv}
-            type={"text"}
-            name={"abv"}
+            type={"number"}
+            name={"abv_gt"}
             inputEvent={inputEvent}
             label={"Search By Above Average"}
           />
