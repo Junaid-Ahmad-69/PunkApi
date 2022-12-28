@@ -12,12 +12,22 @@ const PunkApi = () => {
     abv_gt: "",
     first_brewed: "",
   });
+  let url;
+  if (!!search.value) {
+    url = "https://api.punkapi.com/v2/beers";
+  } else if (search.name !== "") {
+    url = `https://api.punkapi.com/v2/beers?beer_name=${search.name}`;
+  } else if (search.id !== "") {
+    url = `https://api.punkapi.com/v2/beers?ids=${search.id}`;
+  } else if (search.abv_gt !== "") {
+    url = `https://api.punkapi.com/v2/beers?abv_gt=${search.abv_gt}`;
+  } else if (search.first_brewed !== "") {
+    url = `https://api.punkapi.com/v2/beers?brewed_before=${search.first_brewed}`;
+  }
 
   useEffect(() => {
     const dataFetch = async () => {
-      const result = await fetch(
-        `https://api.punkapi.com/v2/beers?ids=${search.id}`
-      ).then((res) => res.json());
+      const result = await fetch(url).then((res) => res.json());
       setResponse(result);
       setPunks(result);
     };
@@ -31,7 +41,7 @@ const PunkApi = () => {
 
   const setData = () => {
     let beer = punks;
-    if (!search.name || !search.id || !search.abv_gt || !search.first_brewed) {
+    if (!search) {
       if (!search.name) {
         const filterResult = beer.filter(({ name }) =>
           name.toLowerCase().includes(search.name.toLowerCase())
@@ -59,7 +69,7 @@ const PunkApi = () => {
         setPunks(beer);
       }
     } else {
-      console.log("ddd");
+      setResponse(punks);
     }
   };
 
