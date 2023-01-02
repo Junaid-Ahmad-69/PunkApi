@@ -2,34 +2,35 @@ import React, { useState, useEffect } from "react";
 import PunkForm from "../PunkForm/PunkForm";
 import "../Task_1_Punk_API/PunkApi.css";
 import PunkTable from "../PunkTable/PunkTable";
+import axios from "axios";
 
 const PunkApi = () => {
   const [response, setResponse] = useState([]);
   const [punks, setPunks] = useState([]);
+  // const [allFilter, setAllFilter] = useState({});
   const [search, setSearch] = useState({
     id: "",
     name: "",
     abv_gt: "",
     first_brewed: "",
   });
-  let url;
-  if (!!search.value) {
-    url = "https://api.punkapi.com/v2/beers";
-  } else if (search.name !== "") {
-    url = `https://api.punkapi.com/v2/beers?beer_name=${search.name}`;
-  } else if (search.id !== "") {
-    url = `https://api.punkapi.com/v2/beers?ids=${search.id}`;
-  } else if (search.abv_gt !== "") {
-    url = `https://api.punkapi.com/v2/beers?abv_gt=${search.abv_gt}`;
-  } else if (search.first_brewed !== "") {
-    url = `https://api.punkapi.com/v2/beers?brewed_before=${search.first_brewed}`;
-  }
-
   useEffect(() => {
     const dataFetch = async () => {
-      const result = await fetch(url).then((res) => res.json());
-      setResponse(result);
-      setPunks(result);
+      let url;
+      if (search.name !== "") {
+        url = `//api.punkapi.com/v2/beers?beer_name=${search.name}`;
+      } else if (search.id !== "") {
+        url = `//api.punkapi.com/v2/beers?ids=${search.id}`;
+      } else if (search.abv_gt !== "") {
+        url = `//api.punkapi.com/v2/beers?abv_gt=${search.abv_gt}`;
+      } else {
+        url = `//api.punkapi.com/v2/beers`;
+      }
+      axios.get(url).then((res) => {
+        const result = res.data;
+        setPunks(result);
+        setResponse(result);
+      });
     };
     dataFetch();
   }, [search]);
@@ -42,34 +43,25 @@ const PunkApi = () => {
   const setData = () => {
     let beer = punks;
     if (!search) {
-      if (!search.name) {
+      if (search.name) {
         const filterResult = beer.filter(({ name }) =>
           name.toLowerCase().includes(search.name.toLowerCase())
         );
         beer = filterResult;
         setPunks(beer);
       }
-      if (!search.id) {
+      if (search.id) {
         const filterResult = beer.filter(({ id }) => id == search.id);
         beer = filterResult;
         setPunks(beer);
       }
-      if (!search.first_brewed) {
-        const filterResult = beer.filter(({ first_brewed }) =>
-          first_brewed.toLowerCase().includes(search.first_brewed.toLowerCase())
-        );
-        beer = filterResult;
-        setPunks(beer);
-      }
-      if (!search.abv_gt) {
+      if (search.abv_gt) {
         const filterResult = beer.filter(
           ({ abv_gt }) => abv_gt == search.abv_gt
         );
         beer = filterResult;
         setPunks(beer);
       }
-    } else {
-      setResponse(punks);
     }
   };
 
@@ -110,13 +102,13 @@ const PunkApi = () => {
             inputEvent={inputEvent}
             label={"Search By Name"}
           />
-          <PunkForm
+          {/* <PunkForm
             search={search.first_brewed}
             type={"text"}
             name={"first_brewed"}
             inputEvent={inputEvent}
             label={"Search By First Brewed"}
-          />
+          /> */}
           <PunkForm
             search={search.abv}
             type={"number"}
