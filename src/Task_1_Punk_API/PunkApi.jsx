@@ -7,20 +7,18 @@ import axios from "axios";
 const PunkApi = () => {
   const [response, setResponse] = useState([]);
   const [punks, setPunks] = useState([]);
-  // const [allFilter, setAllFilter] = useState({});
   const [search, setSearch] = useState({
     id: "",
     name: "",
     abv_gt: "",
-    first_brewed: "",
   });
   useEffect(() => {
     const dataFetch = async () => {
       let url;
-      if (search.name !== "") {
-        url = `//api.punkapi.com/v2/beers?beer_name=${search.name}`;
-      } else if (search.id !== "") {
+      if (search.id !== "") {
         url = `//api.punkapi.com/v2/beers?ids=${search.id}`;
+      } else if (search.name !== "") {
+        url = `//api.punkapi.com/v2/beers?beer_name=${search.name}`;
       } else if (search.abv_gt !== "") {
         url = `//api.punkapi.com/v2/beers?abv_gt=${search.abv_gt}`;
       } else {
@@ -41,28 +39,15 @@ const PunkApi = () => {
   };
 
   const setData = () => {
-    let beer = punks;
-    if (!search) {
-      if (search.name) {
-        const filterResult = beer.filter(({ name }) =>
-          name.toLowerCase().includes(search.name.toLowerCase())
+    setPunks((previtem) => {
+      return previtem.filter((item) => {
+        return (
+          (!search.name ||
+            item.name.toLowerCase().includes(search.name.toLowerCase())) &&
+          (!search.id || item.id == search.id)
         );
-        beer = filterResult;
-        setPunks(beer);
-      }
-      if (search.id) {
-        const filterResult = beer.filter(({ id }) => id == search.id);
-        beer = filterResult;
-        setPunks(beer);
-      }
-      if (search.abv_gt) {
-        const filterResult = beer.filter(
-          ({ abv_gt }) => abv_gt == search.abv_gt
-        );
-        beer = filterResult;
-        setPunks(beer);
-      }
-    }
+      });
+    });
   };
 
   useEffect(() => {
@@ -102,15 +87,8 @@ const PunkApi = () => {
             inputEvent={inputEvent}
             label={"Search By Name"}
           />
-          {/* <PunkForm
-            search={search.first_brewed}
-            type={"text"}
-            name={"first_brewed"}
-            inputEvent={inputEvent}
-            label={"Search By First Brewed"}
-          /> */}
           <PunkForm
-            search={search.abv}
+            search={search.abv_gt}
             type={"number"}
             name={"abv_gt"}
             inputEvent={inputEvent}
