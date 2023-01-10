@@ -6,7 +6,6 @@ import axios from "axios";
 
 const PunkApi = () => {
   const [response, setResponse] = useState([]);
-  // const [punks, setPunks] = useState([]);
   const [search, setSearch] = useState({
     id: "",
     name: "",
@@ -15,41 +14,26 @@ const PunkApi = () => {
   useEffect(() => {
     const dataFetch = async () => {
       let url;
-      // if (search.id !== "") {
-      //   url = `//api.punkapi.com/v2/beers?ids=${search.id}`;
-      // } else if (search.name !== "") {
-      //   url = `//api.punkapi.com/v2/beers?beer_name=${search.name}`;
-      // } else if (search.abv_gt !== "") {
-      //   url = `//api.punkapi.com/v2/beers?abv_gt=${search.abv_gt}`;
-      // } else {
-      //   url = `//api.punkapi.com/v2/beers`;
-      // }
-
-      if (
-        (search.id !== "" ?? search.id === "") &&
-        (search.name === "" ?? search.name !== "") &&
-        (search.abv_gt === "" ?? search.abv_gt !== "")
-      ) {
-        url = `//api.punkapi.com/v2/beers?ids=${search.id}`;
-      } else if (
-        (search.id !== "" ?? search.id === "") &&
-        (search.name !== "" ?? search.name === "") &&
-        (search.abv_gt === "" ?? search.abv_gt !== "")
-      ) {
-        url = `//api.punkapi.com/v2/beers?ids=${search.id}&beer_name=${search.name}`;
-      } else if (
-        (search.id !== "" ?? search.id === "") &&
-        (search.name !== "" ?? search.name === "") &&
-        (search.abv_gt !== "" ?? search.abv_gt === "")
-      ) {
+      if (search.id !== "" && search.name !== "" && search.abv_gt !== "") {
         url = `//api.punkapi.com/v2/beers?ids=${search.id}&beer_name=${search.name}&abv_gt=${search.abv_gt}`;
+      } else if (search.id !== "" && search.name !== "") {
+        url = `//api.punkapi.com/v2/beers?ids=${search.id}&beer_name=${search.name}`;
+      } else if (search.id !== "" && search.abv_gt !== "") {
+        url = `//api.punkapi.com/v2/beers?ids=${search.id}&abv_gt=${search.abv_gt}`;
+      } else if (search.name !== "" && search.abv_gt !== "") {
+        url = `//api.punkapi.com/v2/beers?beer_name=${search.name}&abv_gt=${search.abv_gt}`;
+      } else if (search.id !== "") {
+        url = `//api.punkapi.com/v2/beers?ids=${search.id}`;
+      } else if (search.name !== "") {
+        url = `//api.punkapi.com/v2/beers?beer_name=${search.name}`;
+      } else if (search.abv_gt !== "") {
+        url = `//api.punkapi.com/v2/beers?abv_gt=${search.abv_gt}`;
       } else {
         url = `//api.punkapi.com/v2/beers`;
       }
 
       axios.get(url).then((res) => {
         const result = res.data;
-        // setPunks(result);
         setResponse(result);
       });
     };
@@ -65,32 +49,15 @@ const PunkApi = () => {
     setResponse((previtem) => {
       return previtem.filter(({ id, name, abv_gt }) => {
         return (
-          (!search.id || id == search.id) ||
-          (!search.name ||
-            name.toLowerCase().includes(search.name.toLowerCase())) ||
-          (!search.abv_gt || abv_gt !== search.abv_gt)
+          !search.id ||
+          id == search.id ||
+          !search.name ||
+          name.toLowerCase().includes(search.name.toLowerCase()) ||
+          !search.abv_gt ||
+          abv_gt !== search.abv_gt
         );
       });
     });
-
-    // if (!search) {
-    //   if (search.name) {
-    //     const filterResult = punks.filter(({ name }) =>
-    //       name.toLowerCase().includes(search.name.toLowerCase())
-    //     );
-    //     setPunks(filterResult);
-    //   }
-    //   if (search.id) {
-    //     const filterResult = punks.filter(({ id }) => id == search.id);
-    //     setPunks(filterResult);
-    //   }
-    //   if (search.abv_gt) {
-    //     const filterResult = punks.filter(
-    //       ({ abv_gt }) => abv_gt == search.abv_gt
-    //     );
-    //     setPunks(filterResult);
-    //   }
-    // }
   };
 
   useEffect(() => {
