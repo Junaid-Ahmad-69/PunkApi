@@ -14,20 +14,12 @@ const PunkApi = () => {
   useEffect(() => {
     const dataFetch = async () => {
       let url;
-      if (search.id !== "" && search.name !== "" && search.abv_gt !== "") {
-        url = `//api.punkapi.com/v2/beers?ids=${search.id}&beer_name=${search.name}&abv_gt=${search.abv_gt}`;
-      } else if (search.id !== "" && search.name !== "") {
-        url = `//api.punkapi.com/v2/beers?ids=${search.id}&beer_name=${search.name}`;
-      } else if (search.id !== "" && search.abv_gt !== "") {
-        url = `//api.punkapi.com/v2/beers?ids=${search.id}&abv_gt=${search.abv_gt}`;
-      } else if (search.name !== "" && search.abv_gt !== "") {
-        url = `//api.punkapi.com/v2/beers?beer_name=${search.name}&abv_gt=${search.abv_gt}`;
-      } else if (search.id !== "") {
-        url = `//api.punkapi.com/v2/beers?ids=${search.id}`;
-      } else if (search.name !== "") {
-        url = `//api.punkapi.com/v2/beers?beer_name=${search.name}`;
-      } else if (search.abv_gt !== "") {
-        url = `//api.punkapi.com/v2/beers?abv_gt=${search.abv_gt}`;
+      if (search.id !== "" || search.name !== "" || search.abv_gt !== "") {
+        url = `//api.punkapi.com/v2/beers?`;
+        if (search.id !== "") url += `ids=${search.id}&`;
+        if (search.name !== "") url += `beer_name=${search.name}&`;
+        if (search.abv_gt !== "") url += `abv_gt=${search.abv_gt}&`;
+        url = url.slice(0, -1);
       } else {
         url = `//api.punkapi.com/v2/beers`;
       }
