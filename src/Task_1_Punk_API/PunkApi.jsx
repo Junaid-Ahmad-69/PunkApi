@@ -7,23 +7,27 @@ import axios from "axios";
 const PunkApi = () => {
     const [response, setResponse] = useState([]);
     const [beer, setBeer] = useState(1);
-    const perBeer = 10;
+    const perBeer = 1;
     const [search, setSearch] = useState({
         id: "",
         name: "",
         abv_gt: "",
+        yeast: "",
+        brewed_after: ""
     });
     useEffect(() => {
-        const dataFetch = async () => {
+        const dataFetch = () => {
             let url;
-            if (search.id !== "" || search.name !== "" || search.abv_gt !== "") {
-                url = `//api.punkapi.com/v2/beers?`;
+            if (search.id !== "" || search.name !== "" || search.abv_gt !== "" || search.yeast !== "" || search.first_brewed !== "") {
+                url = `${process.env.REACT_APP_PUNK_API}/beers?`;
                 if (search.id !== "") url += `ids=${search.id}&`;
                 if (search.name !== "") url += `beer_name=${search.name}&`;
                 if (search.abv_gt !== "") url += `abv_gt=${search.abv_gt}&`;
+                if (search.brewed_after !== "") url += `brewed_after=${search.brewed_after}&`;
+                if (search.yeast !== "") url += `abv_gt=${search.yeast}&`;
                 url = url.slice(0, -1);
             } else {
-                url = `//api.punkapi.com/v2/beers?page=${beer}&per_page=${perBeer}`;
+                url = `${process.env.REACT_APP_PUNK_API}/beers?page=${beer}&per_page=${perBeer}`;
             }
 
             axios.get(url).then((res) => {
@@ -38,17 +42,17 @@ const PunkApi = () => {
         const {value, name} = event.target;
         setSearch({...search, [name]: value});
     };
-
     const setData = () => {
         setResponse((prevItem) => {
-            return prevItem.filter(({id, name, abv_gt}) => {
+            return prevItem.filter(({id, name, abv_gt, yeast, brewed_after}) => {
                 return (
                     !search.id ||
                     id === search.id ||
                     !search.name ||
                     name.toLowerCase().includes(search.name.toLowerCase()) ||
                     !search.abv_gt ||
-                    abv_gt !== search.abv_gt
+                    abv_gt !== search.abv_gt ||
+                    !search.brewed_after || brewed_after === search.brewed_after
                 );
             });
         });
@@ -75,44 +79,66 @@ const PunkApi = () => {
     return (
         <>
             <main>
-                <h1>Punk Brewed</h1>
+                <h1>Punk Beers Filters</h1>
                 <div className="search-controller">
                     <PunkForm
                         search={search.id}
                         type={"number"}
                         name={"id"}
                         inputEvent={inputEvent}
-                        label={"Search By ID"}
+                        label={"iD#"}
+                    />
+                    <PunkForm
+                        search={search.brewed_after}
+                        type={"text"}
+                        name={"brewed_after"}
+                        inputEvent={inputEvent}
+                        label={"Brewed"}
                     />
                     <PunkForm
                         search={search.name}
                         type={"text"}
                         name={"name"}
                         inputEvent={inputEvent}
-                        label={"Search By Name"}
+                        label={"Beer"}
                     />
                     <PunkForm
                         search={search.abv_gt}
                         type={"number"}
                         name={"abv_gt"}
                         inputEvent={inputEvent}
-                        label={"Search By Above Average"}
+                        label={"ABV"}
+                    />
+                    <PunkForm
+                        search={search.yeast}
+                        type={"text"}
+                        name={"yeast"}
+                        inputEvent={inputEvent}
+                        label={"Yeast"}
                     />
                 </div>
                 <PunkTable response={response} column={column}/>
             </main>
 
             <div className="buttons-group">
-                <button className="paginate-buttons" disabled={beer === 1} onClick={() => {
-                    setBeer(beer => (beer - 1))
-                }}>Previous
+                <button
+                    className="paginate-buttons"
+                    disabled={beer === 1}
+                    onClick={() => {
+                        setBeer((beer) => beer - 1);
+                    }}
+                >
+                    Previous
                 </button>
-                <button className="paginate-buttons" onClick={() => {
-                    setBeer(beer => (beer + 1))
-                }}>Next
+                <button
+                    className="paginate-buttons"
+                    onClick={() => {
+                        setBeer((beer) => beer + 1);
+                    }}
+                >
+                    Next
                 </button>
             </div>
-
         </>
     );
 };

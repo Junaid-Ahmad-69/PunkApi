@@ -9,15 +9,16 @@ h1 {
 }
 .search-controller {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
 }
-.buttons-group{
+.buttons-group {
   display: flex;
   align-items: center;
-  text-align: end;
+  justify-content: center;
 }
-.paginate-buttons{
+.paginate-buttons {
   outline: none;
   border: none;
   background: #7dc2af;
@@ -27,5 +28,4 @@ h1 {
   cursor: pointer;
   border-radius: 5px;
   padding: 5px 10px;
-
 }
