@@ -7,24 +7,24 @@ import axios from "axios";
 const PunkApi = () => {
     const [response, setResponse] = useState([]);
     const [beer, setBeer] = useState(1);
-    const perBeer = 1;
+    const [perBeer, setPerBeer] = useState(25);
     const [search, setSearch] = useState({
         id: "",
         name: "",
         abv_gt: "",
         yeast: "",
-        brewed_after: ""
+        brewed_after: "",
     });
     useEffect(() => {
         const dataFetch = () => {
             let url;
-            if (search.id !== "" || search.name !== "" || search.abv_gt !== "" || search.yeast !== "" || search.first_brewed !== "") {
+            if (search.id !== "" || search.name !== "" || search.abv_gt !== "" || search.yeast !== "" || search.brewed_after !== "") {
                 url = `${process.env.REACT_APP_PUNK_API}/beers?`;
                 if (search.id !== "") url += `ids=${search.id}&`;
                 if (search.name !== "") url += `beer_name=${search.name}&`;
                 if (search.abv_gt !== "") url += `abv_gt=${search.abv_gt}&`;
                 if (search.brewed_after !== "") url += `brewed_after=${search.brewed_after}&`;
-                if (search.yeast !== "") url += `abv_gt=${search.yeast}&`;
+                if (search.yeast !== "") url += `yeast=${search.yeast}&`;
                 url = url.slice(0, -1);
             } else {
                 url = `${process.env.REACT_APP_PUNK_API}/beers?page=${beer}&per_page=${perBeer}`;
@@ -36,7 +36,7 @@ const PunkApi = () => {
             });
         };
         dataFetch();
-    }, [search, beer]);
+    }, [search, beer, perBeer]);
 
     const inputEvent = (event) => {
         const {value, name} = event.target;
@@ -52,6 +52,7 @@ const PunkApi = () => {
                     name.toLowerCase().includes(search.name.toLowerCase()) ||
                     !search.abv_gt ||
                     abv_gt !== search.abv_gt ||
+                    !search.yeast || yeast.toLocaleString().includes(yeast.toLocaleString()) ||
                     !search.brewed_after || brewed_after === search.brewed_after
                 );
             });
@@ -75,12 +76,26 @@ const PunkApi = () => {
         yeast: "Yeast",
         image: "image",
     };
+    const handleChange = (event) => {
+        setPerBeer(event.target.value);
+    }
 
     return (
         <>
             <main>
                 <h1>Punk Beers Filters</h1>
                 <div className="search-controller">
+                    {/*<PunkForm*/}
+                    {/*    search={beer}*/}
+                    {/*    type={"text"}*/}
+                    {/*    name={"per_page"}*/}
+                    {/*    // inputEvent={}*/}
+                    {/*    onChange={setPerBeer(e => (e.target.value))}*/}
+                    {/*    label={"Pagination Range"}*/}
+                    {/*/>*/}
+
+
+                    <input type="text" value={perBeer} onChange={handleChange}/>
                     <PunkForm
                         search={search.id}
                         type={"number"}
@@ -116,6 +131,7 @@ const PunkApi = () => {
                         inputEvent={inputEvent}
                         label={"Yeast"}
                     />
+
                 </div>
                 <PunkTable response={response} column={column}/>
             </main>
