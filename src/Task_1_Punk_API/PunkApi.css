@@ -1,31 +1,40 @@
 main {
-  padding: 0 5rem;
-  width: 100%;
+    padding: 0 5rem;
+    width: 100%;
 }
+
 h1 {
-  font-size: 3rem;
-  text-align: center;
-  margin: 2rem;
+    font-size: 3rem;
+    text-align: center;
+    margin: 2rem;
 }
+
 .search-controller {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
 }
+
 .buttons-group {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
 .paginate-buttons {
-  outline: none;
-  border: none;
-  background: #7dc2af;
-  color: white;
-  height: 3rem;
-  text-align: center;
-  cursor: pointer;
-  border-radius: 5px;
-  padding: 5px 10px;
+    outline: none;
+    border: none;
+    background: #7dc2af;
+    color: white;
+    height: 3rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+.page-number{
+    font-size: 14px;
+    font-weight: bold;
+    padding: 0 20px;
 }

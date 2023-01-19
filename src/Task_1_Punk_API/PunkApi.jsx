@@ -7,7 +7,7 @@ import axios from "axios";
 const PunkApi = () => {
     const [response, setResponse] = useState([]);
     const [beer, setBeer] = useState(1);
-    const [perBeer, setPerBeer] = useState(25);
+    const [perBeer, setPerBeer] = useState();
     const [search, setSearch] = useState({
         id: "",
         name: "",
@@ -17,27 +17,25 @@ const PunkApi = () => {
     });
     useEffect(() => {
         const dataFetch = () => {
-            let url;
-            if (search.id !== "" || search.name !== "" || search.abv_gt !== "" || search.yeast !== "" || search.brewed_after !== "") {
-                url = `${process.env.REACT_APP_PUNK_API}/beers?`;
-                if (search.id !== "") url += `ids=${search.id}&`;
-                if (search.name !== "") url += `beer_name=${search.name}&`;
-                if (search.abv_gt !== "") url += `abv_gt=${search.abv_gt}&`;
-                if (search.brewed_after !== "") url += `brewed_after=${search.brewed_after}&`;
-                if (search.yeast !== "") url += `yeast=${search.yeast}&`;
-                url = url.slice(0, -1);
-            } else {
-                url = `${process.env.REACT_APP_PUNK_API}/beers?page=${beer}&per_page=${perBeer}`;
-            }
+            const queryParam = {}
+            if (search.id !== "") queryParam.ids = search.id;
+            if (search.name !== "") queryParam.beer_name = search.name;
+            if (search.abv_gt !== "") queryParam.abv_gt = search.abv_gt;
+            if (search.brewed_after !== "") queryParam.brewed_after = search.brewed_after;
+            if (search.yeast !== "") queryParam.yeast = search.yeast;
+            queryParam.page = beer;
+            queryParam.per_page = perBeer;
 
-            axios.get(url).then((res) => {
+            axios.get(`${process.env.REACT_APP_PUNK_API}/beers`, {
+                params: queryParam
+            }).then((res) => {
                 const result = res.data;
                 setResponse(result);
             });
         };
         dataFetch();
     }, [search, beer, perBeer]);
-
+    // console.log(data)
     const inputEvent = (event) => {
         const {value, name} = event.target;
         setSearch({...search, [name]: value});
@@ -62,7 +60,7 @@ const PunkApi = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setData();
-        }, 100);
+        }, 800);
         return () => clearTimeout(timer);
     }, [search]);
 
@@ -85,17 +83,12 @@ const PunkApi = () => {
             <main>
                 <h1>Punk Beers Filters</h1>
                 <div className="search-controller">
-                    {/*<PunkForm*/}
-                    {/*    search={beer}*/}
-                    {/*    type={"text"}*/}
-                    {/*    name={"per_page"}*/}
-                    {/*    // inputEvent={}*/}
-                    {/*    onChange={setPerBeer(e => (e.target.value))}*/}
-                    {/*    label={"Pagination Range"}*/}
-                    {/*/>*/}
-
-
-                    <input type="text" value={perBeer} onChange={handleChange}/>
+                    <PunkForm
+                        search={perBeer}
+                        type={"number"}
+                        label={"Pagination Range"}
+                        inputEvent={handleChange}
+                    />
                     <PunkForm
                         search={search.id}
                         type={"number"}
@@ -146,6 +139,7 @@ const PunkApi = () => {
                 >
                     Previous
                 </button>
+                <span className="page-number">{beer}</span>
                 <button
                     className="paginate-buttons"
                     onClick={() => {
