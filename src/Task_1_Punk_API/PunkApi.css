@@ -20,14 +20,20 @@ h1 {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 20px  0;
 }
-
+.paginate-buttons.disabled {
+    background: grey;
+    color: #ccc;
+    cursor: not-allowed;
+}
 .paginate-buttons {
     outline: none;
     border: none;
     background: #7dc2af;
     color: white;
     height: 3rem;
+    width: 6rem;
     text-align: center;
     cursor: pointer;
     border-radius: 5px;

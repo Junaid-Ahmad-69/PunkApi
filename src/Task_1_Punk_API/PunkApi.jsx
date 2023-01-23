@@ -3,7 +3,7 @@ import PunkForm from "../PunkForm/PunkForm";
 import "../Task_1_Punk_API/PunkApi.css";
 import PunkTable from "../PunkTable/PunkTable";
 import axios from "axios";
-import {DebounceInput} from "react-debounce-input";
+import button from "../Button/Button";
 
 const PunkApi = () => {
     const [response, setResponse] = useState([]);
@@ -42,6 +42,7 @@ const PunkApi = () => {
         const {value, name} = event.target;
         setSearch({...search, [name]: value});
     };
+
 
     const setData = () => {
         setResponse((prevItem) => {
@@ -90,6 +91,7 @@ const PunkApi = () => {
                         name={"paginate"}
                         label={"Pagination Range"}
                         inputEvent={handleChange}
+
                     />
                     <PunkForm
                         search={search.id}
@@ -129,28 +131,29 @@ const PunkApi = () => {
 
                 </div>
                 <PunkTable response={response} column={column}/>
+                <div className="buttons-group">
+                    <button
+                        className={`paginate-buttons ${beer ===1 ? "disabled": ""}`}
+                        disabled = {beer === 1}
+                        onClick={() => {
+                            setBeer((beer) => beer - 1);
+                        }}
+                    >
+                        Previous
+                    </button>
+                    <span className="page-number">{beer}</span>
+                    <button
+                        className="paginate-buttons"
+                        onClick={() => {
+                            setBeer((beer) => beer + 1);
+                        }}
+                    >
+                        Next
+                    </button>
+                </div>
             </main>
 
-            <div className="buttons-group">
-                <button
-                    className="paginate-buttons"
-                    disabled={beer === 1}
-                    onClick={() => {
-                        setBeer((beer) => beer - 1);
-                    }}
-                >
-                    Previous
-                </button>
-                <span className="page-number">{beer}</span>
-                <button
-                    className="paginate-buttons"
-                    onClick={() => {
-                        setBeer((beer) => beer + 1);
-                    }}
-                >
-                    Next
-                </button>
-            </div>
+
         </>
     );
 };
