@@ -14,9 +14,9 @@ const App = () => {
       <Component_First name={name} />
       <EventsHandling />
       <Form /> */}
-      <PunkHeader />
+      {/*<PunkHeader />*/}
       <PunkApi />
-      <PunkFooter />
+      {/*<PunkFooter />*/}
     </div>
   );
 };
