@@ -3,6 +3,7 @@ import PunkForm from "../PunkForm/PunkForm";
 import "../Task_1_Punk_API/PunkApi.css";
 import PunkTable from "../PunkTable/PunkTable";
 import axios from "axios";
+import {DebounceInput} from "react-debounce-input";
 
 const PunkApi = () => {
     const [response, setResponse] = useState([]);
@@ -15,8 +16,9 @@ const PunkApi = () => {
         yeast: "",
         brewed_after: "",
     });
+    const defaultPerBeer = 25;
     useEffect(() => {
-        const dataFetch = () => {
+        const dataFetch = async function () {
             const queryParam = {}
             if (search.id !== "") queryParam.ids = search.id;
             if (search.name !== "") queryParam.beer_name = search.name;
@@ -24,9 +26,9 @@ const PunkApi = () => {
             if (search.brewed_after !== "") queryParam.brewed_after = search.brewed_after;
             if (search.yeast !== "") queryParam.yeast = search.yeast;
             queryParam.page = beer;
-            queryParam.per_page = perBeer;
+            queryParam.per_page = perBeer || defaultPerBeer;
 
-            axios.get(`${process.env.REACT_APP_PUNK_API}/beers`, {
+            await axios.get(`${process.env.REACT_APP_PUNK_API}/beers`, {
                 params: queryParam
             }).then((res) => {
                 const result = res.data;
@@ -35,11 +37,12 @@ const PunkApi = () => {
         };
         dataFetch();
     }, [search, beer, perBeer]);
-    // console.log(data)
+
     const inputEvent = (event) => {
         const {value, name} = event.target;
         setSearch({...search, [name]: value});
     };
+
     const setData = () => {
         setResponse((prevItem) => {
             return prevItem.filter(({id, name, abv_gt, yeast, brewed_after}) => {
@@ -56,7 +59,6 @@ const PunkApi = () => {
             });
         });
     };
-
     useEffect(() => {
         const timer = setTimeout(() => {
             setData();
@@ -84,8 +86,8 @@ const PunkApi = () => {
                 <h1>Punk Beers Filters</h1>
                 <div className="search-controller">
                     <PunkForm
-                        search={perBeer}
                         type={"number"}
+                        name={"paginate"}
                         label={"Pagination Range"}
                         inputEvent={handleChange}
                     />
