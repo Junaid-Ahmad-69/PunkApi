@@ -6,8 +6,8 @@ import axios from "axios";
 
 const PunkApi = () => {
     const [response, setResponse] = useState([]);
-    const [beer, setBeer] = useState(1);
-    const [perBeer, setPerBeer] = useState();
+    const [page, setPage] = useState(1);
+    const [perPage, setPerPage] = useState(25);
     const [search, setSearch] = useState({
         id: "",
         name: "",
@@ -15,7 +15,7 @@ const PunkApi = () => {
         yeast: "",
         brewed_after: "",
     });
-    const defaultPerBeer = 25;
+    const defaultPage = 25;
     useEffect(() => {
         const dataFetch = async function () {
             const queryParam = {}
@@ -24,9 +24,8 @@ const PunkApi = () => {
             if (search.abv_gt !== "") queryParam.abv_gt = search.abv_gt;
             if (search.brewed_after !== "") queryParam.brewed_after = search.brewed_after;
             if (search.yeast !== "") queryParam.yeast = search.yeast;
-            queryParam.page = beer;
-            queryParam.per_page = perBeer || defaultPerBeer;
-
+            queryParam.page = page;
+            queryParam.per_page = perPage || defaultPage;
             await axios.get(`${process.env.REACT_APP_PUNK_API}/beers`, {
                 params: queryParam
             }).then((res) => {
@@ -34,14 +33,12 @@ const PunkApi = () => {
                 setResponse(result);
             });
         };
-
         dataFetch();
-    }, [search, beer, perBeer]);
+    }, [search, page, perPage]);
     const inputEvent = (event) => {
         const {value, name} = event.target;
         setSearch({...search, [name]: value});
     };
-
     const column = {
         name: "Name",
         id: "Id",
@@ -50,84 +47,82 @@ const PunkApi = () => {
         description: "Description",
         abv: "Abv",
         yeast: "Yeast",
-        image: "image",
+        image: "Image",
     };
     const handleChange = (event) => {
-        setPerBeer(event.target.value);
+        setPerPage(event.target.value);
     }
 
+
+    let pages = [];
+    for (let i = 0; i < 13; i++) {
+        pages.push(i)
+    }
+    console.log(pages)
     return (
         <>
             <main>
                 <h1>Punk Beers Filters</h1>
                 <div className="search-controller">
-                    <PunkForm
-                        type={"number"}
-                        name={"paginate"}
-                        label={"Pagination Range"}
-                        inputEvent={handleChange}
+                    <form>
+                        <PunkForm
+                            type={"number"}
+                            name={"paginate"}
+                            label={"Pagination Range"}
+                            inputEvent={handleChange}
 
-                    />
-                    <PunkForm
-                        search={search.id}
-                        type={"number"}
-                        name={"id"}
-                        inputEvent={inputEvent}
-                        label={"iD#"}
-                    />
-                    <PunkForm
-                        search={search.brewed_after}
-                        type={"text"}
-                        name={"brewed_after"}
-                        inputEvent={inputEvent}
-                        label={"Brewed"}
-                    />
-                    <PunkForm
-                        search={search.name}
-                        type={"text"}
-                        name={"name"}
-                        inputEvent={inputEvent}
-                        label={"Beer"}
-                    />
-                    <PunkForm
-                        search={search.abv_gt}
-                        type={"number"}
-                        name={"abv_gt"}
-                        inputEvent={inputEvent}
-                        label={"ABV"}
-                    />
-                    <PunkForm
-                        search={search.yeast}
-                        type={"text"}
-                        name={"yeast"}
-                        inputEvent={inputEvent}
-                        label={"Yeast"}
-                    />
-
+                        />
+                        <PunkForm
+                            search={search.id}
+                            type={"number"}
+                            name={"id"}
+                            inputEvent={inputEvent}
+                            label={"iD#"}
+                        />
+                        <PunkForm
+                            search={search.brewed_after}
+                            type={"text"}
+                            name={"brewed_after"}
+                            inputEvent={inputEvent}
+                            label={"Brewed"}
+                        />
+                        <PunkForm
+                            search={search.name}
+                            type={"text"}
+                            name={"name"}
+                            inputEvent={inputEvent}
+                            label={"Beer Name"}
+                        />
+                        <PunkForm
+                            search={search.abv_gt}
+                            type={"number"}
+                            name={"abv_gt"}
+                            inputEvent={inputEvent}
+                            label={"ABV"}
+                        />
+                        <PunkForm
+                            search={search.yeast}
+                            type={"text"}
+                            name={"yeast"}
+                            inputEvent={inputEvent}
+                            label={"Yeast"}
+                        />
+                    </form>
                 </div>
+
                 <PunkTable response={response} column={column}/>
-                <div className="buttons-group">
-                    <button
-                        className={`paginate-buttons ${beer === 1 ? "disabled" : ""}`}
-                        disabled={beer === 1}
-                        onClick={() => {
-                            setBeer((beer) => beer - 1);
-                        }}
-                    >
-                        Previous
-                    </button>
-                    <span className="page-number">{beer}</span>
-                    <button
-                        className="paginate-buttons"
-                        onClick={() => {
-                            setBeer((beer) => beer + 1);
-                        }}
-                    >
-                        Next
-                    </button>
-                </div>
-            </main>
 
+                <nav>
+                    <ul>
+                        {pages.map((index) => (
+                            <li key={index}>
+                                <button className={`paginate-buttons ${index === 0} ? "disabled" : " "`}
+                                        disabled={index === 0} onClick={() => setPage(index + 1)}>{index + 1}</button>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
+            </main>
 
         </>
     );
