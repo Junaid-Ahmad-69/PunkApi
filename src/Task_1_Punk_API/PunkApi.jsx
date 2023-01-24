@@ -3,7 +3,6 @@ import PunkForm from "../PunkForm/PunkForm";
 import "../Task_1_Punk_API/PunkApi.css";
 import PunkTable from "../PunkTable/PunkTable";
 import axios from "axios";
-import button from "../Button/Button";
 
 const PunkApi = () => {
     const [response, setResponse] = useState([]);
@@ -35,37 +34,13 @@ const PunkApi = () => {
                 setResponse(result);
             });
         };
+
         dataFetch();
     }, [search, beer, perBeer]);
-
     const inputEvent = (event) => {
         const {value, name} = event.target;
         setSearch({...search, [name]: value});
     };
-
-
-    const setData = () => {
-        setResponse((prevItem) => {
-            return prevItem.filter(({id, name, abv_gt, yeast, brewed_after}) => {
-                return (
-                    !search.id ||
-                    id === search.id ||
-                    !search.name ||
-                    name.toLowerCase().includes(search.name.toLowerCase()) ||
-                    !search.abv_gt ||
-                    abv_gt !== search.abv_gt ||
-                    !search.yeast || yeast.toLocaleString().includes(yeast.toLocaleString()) ||
-                    !search.brewed_after || brewed_after === search.brewed_after
-                );
-            });
-        });
-    };
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setData();
-        }, 800);
-        return () => clearTimeout(timer);
-    }, [search]);
 
     const column = {
         name: "Name",
@@ -133,8 +108,8 @@ const PunkApi = () => {
                 <PunkTable response={response} column={column}/>
                 <div className="buttons-group">
                     <button
-                        className={`paginate-buttons ${beer ===1 ? "disabled": ""}`}
-                        disabled = {beer === 1}
+                        className={`paginate-buttons ${beer === 1 ? "disabled" : ""}`}
+                        disabled={beer === 1}
                         onClick={() => {
                             setBeer((beer) => beer - 1);
                         }}
