@@ -1,25 +1,28 @@
 import "./PunkForm.css";
-const PunkForm = ({ search, inputEvent, type, name, label }) => {
-  const submitHandler = (e) => {
-    e.preventDefault();
-  };
+import {DebounceInput} from "react-debounce-input";
 
-  return (
-    <>
-      <form method="#" onSubmit={submitHandler}>
-        <div className="form-control">
-        <label>{label} </label>
-        <input
-          value={search}
-          type={type}
-          name={name}
-          onChange={(event) => {
-            inputEvent(event);
-          }}
-        />
-        </div>
-      </form>
-    </>
-  );
+const PunkForm = ({search, inputEvent, type, name, label}) => {
+    const submitHandler = (e) => {
+        e.preventDefault();
+    };
+
+    return (
+        <>
+            <form method="#" onSubmit={submitHandler}>
+                <div className="form-control">
+                    <label>{label} </label>
+                    <DebounceInput
+                        value={search}
+                        type={type}
+                        name={name}
+                        debounceTimeout={1000}
+                        onChange={(event) => {
+                            inputEvent(event);
+                        }}
+                    />
+                </div>
+            </form>
+        </>
+    );
 };
 export default PunkForm;
