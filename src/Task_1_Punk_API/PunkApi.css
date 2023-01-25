@@ -16,16 +16,37 @@ h1 {
     justify-content: space-between;
 }
 
-.buttons-group {
+.form-control {
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 20px  0;
+    justify-content: space-between;
+    flex-direction: row;
+    gap: 20px;
+    flex-wrap: wrap;
+
 }
+
 .paginate-buttons.disabled {
     background: grey;
     color: #ccc;
     cursor: not-allowed;
+}
+
+.page-number{
+    font-size: 14px;
+    font-weight: bold;
+    padding: 0 20px;
+}
+.paginate-nav .paginate-item{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+.paginate-nav .paginate-item .paginate-list{
+    list-style: none;
+    margin:  10px;
 }
 .paginate-buttons {
     outline: none;
@@ -33,14 +54,9 @@ h1 {
     background: #7dc2af;
     color: white;
     height: 3rem;
-    width: 6rem;
+    width: 3rem;
     text-align: center;
     cursor: pointer;
     border-radius: 5px;
-    padding: 5px 10px;
-}
-.page-number{
-    font-size: 14px;
-    font-weight: bold;
-    padding: 0 20px;
+    padding: 5px;
 }
