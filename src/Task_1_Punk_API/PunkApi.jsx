@@ -4,8 +4,18 @@ import "../Task_1_Punk_API/PunkApi.css";
 import PunkTable from "../PunkTable/PunkTable";
 import axios from "axios";
 
+
+const handlePaginationData = (perPage) => {
+    let allData = [];
+    for (let i = 0; i < 325 / perPage; i++) {
+        allData.push(i);
+    }
+
+    return allData;
+}
 const PunkApi = () => {
     const [response, setResponse] = useState([]);
+    const [totalRecords, setTotalRecords] = useState([]);
     const [page, setPage] = useState(1);
     const [perPage, setPerPage] = useState(25);
     const [search, setSearch] = useState({
@@ -34,7 +44,16 @@ const PunkApi = () => {
             });
         };
         dataFetch();
+
     }, [search, page, perPage]);
+
+    useEffect(() => {
+        if (perPage) {
+            setTotalRecords(handlePaginationData(perPage))
+        }
+    }, [perPage])
+
+
     const inputEvent = (event) => {
         const {value, name} = event.target;
         setSearch({...search, [name]: value});
@@ -54,21 +73,16 @@ const PunkApi = () => {
     }
 
 
-    let pages = [];
-    for (let i = 0; i < 13; i++) {
-        pages.push(i)
-    }
-    console.log(pages)
     return (
         <>
             <main>
                 <h1>Punk Beers Filters</h1>
                 <div className="search-controller">
-                    <form>
+                    <form className='form-control'>
                         <PunkForm
                             type={"number"}
                             name={"paginate"}
-                            label={"Pagination Range"}
+                            label={"Pagination"}
                             inputEvent={handleChange}
 
                         />
@@ -112,12 +126,13 @@ const PunkApi = () => {
 
                 <PunkTable response={response} column={column}/>
 
-                <nav>
-                    <ul>
-                        {pages.map((index) => (
-                            <li key={index}>
-                                <button className={`paginate-buttons ${index === 0} ? "disabled" : " "`}
-                                        disabled={index === 0} onClick={() => setPage(index + 1)}>{index + 1}</button>
+                <nav className="paginate-nav">
+                    <ul className="paginate-item">
+                        {totalRecords.map((index) => (
+                            <li className="paginate-list" key={index}>
+                                <button className="paginate-buttons"
+                                        onClick={() => setPage(index + 1)}>{index + 1}</button>
+
                             </li>
                         ))}
                     </ul>
